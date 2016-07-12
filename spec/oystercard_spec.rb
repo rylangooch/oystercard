@@ -3,6 +3,15 @@ require 'oystercard'
 describe Oystercard do
   subject { described_class.new }
 
+  describe 'initialize' do
+
+    it 'is initially not in a journey' do
+      expect(subject).not_to be_in_journey
+    end
+
+  end
+
+
   describe "balance" do
     it "is expected to return a float" do
       expect(subject.balance).to eq(0)
@@ -28,6 +37,28 @@ describe Oystercard do
       subject.deduct(1)
       expect(subject.balance).to eq(4)
     end
+  end
+
+  describe 'in_journey?' do
+    it 'reports whether card is in journey' do
+      subject.touch_in
+      expect(subject).to be_in_journey
+    end
+  end
+
+  describe 'touch_out' do
+    it 'can change the status of in journey' do
+      subject.touch_in
+      expect{subject.touch_out}.to change{subject.in_journey?}.to be(false)
+    end
+  end
+
+  describe 'touch_in' do
+
+    it 'can change the status of in journey' do
+      expect{subject.touch_in}.to change{subject.in_journey?}.to be(true)
+    end
+
   end
 
 end
