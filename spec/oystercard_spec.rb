@@ -8,9 +8,7 @@ describe Oystercard do
     it 'is initially not in a journey' do
       expect(subject).not_to be_in_journey
     end
-
   end
-
 
   describe "balance" do
     it "is expected to return a float" do
@@ -19,15 +17,18 @@ describe Oystercard do
   end
 
   describe "top_up" do
-    it "is expected to top up the oystercard by a specified amount" do
-      subject.top_up(5)
-      expect{subject.deduct(3)}.to change{ subject.balance }.by(-3)
-    end
+    context 'card to be fully topped up' do
+        before(:example) do
+          subject.top_up(Oystercard::MAXIMUM_BALANCE)
+        end
 
-    it "will raise an error if card limit reached" do
-      maximum_balance = Oystercard::MAXIMUM_BALANCE
-      subject.top_up(maximum_balance)
-      expect {subject.top_up(1)}.to raise_error "Unable to top up: £#{maximum_balance} limit exceeded"
+      it "is expected to top up the oystercard by a specified amount" do
+        expect{subject.deduct(3)}.to change{ subject.balance }.by(-3)
+      end
+
+      it "will raise an error if card limit reached" do
+        expect {subject.top_up(1)}.to raise_error "Unable to top up: £#{Oystercard::MAXIMUM_BALANCE} limit exceeded"
+      end
     end
   end
 
