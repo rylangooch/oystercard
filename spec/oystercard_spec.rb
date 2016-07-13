@@ -21,7 +21,6 @@ describe Oystercard do
       it { is_expected.to(respond_to(:in_journey?)) }
       it { is_expected.to(respond_to(:touch_in).with(1).argument) }
       it { is_expected.to(respond_to(:touch_out).with(1).argument) }
-      it { is_expected.to(respond_to(:entry_station)) }
     end
   end
 
@@ -69,9 +68,10 @@ describe Oystercard do
         expect{ card_with_money.touch_in(entry_station) }.to change{ card_with_money.balance }.by(-min_fare)
       end
 
+      let(:journey) { {entry_station: entry_station} }
       it 'record the touch_in station' do
         card_with_money.touch_in(entry_station)
-        expect(card_with_money.entry_station).to(eq(entry_station))
+        expect(card_with_money.journeys).to include journey
       end
     end
   end
@@ -82,18 +82,6 @@ describe Oystercard do
         card_with_money.touch_in(entry_station)
         card_with_money.touch_out(exit_station)
         expect(card_with_money).not_to(be_in_journey)
-      end
-
-      it 'forget entry_station when touching out' do
-        card_with_money.touch_in(entry_station)
-        card_with_money.touch_out(exit_station)
-        expect(card_with_money.entry_station).to(eq(nil))
-      end
-
-      it 'records the exit station' do
-        card_with_money.touch_in(entry_station)
-        card_with_money.touch_out(exit_station)
-        expect(card_with_money.exit_station).to eq(exit_station)
       end
     end
   end

@@ -8,7 +8,6 @@ class Oystercard
 
   def initialize
     @balance = 0
-    @journey = {}
     @journeys = []
   end
 
@@ -20,16 +19,15 @@ class Oystercard
   def touch_in(entry_station)
     raise "Card needs at least £#{MIN_AMOUNT} to touch in" if @balance < MIN_AMOUNT
     deduct_fare(MIN_FARE)
-    @journey[:entry_station] = entry_station
+    @journeys << {:entry_station => entry_station}
   end
 
   def touch_out(exit_station)
-    @journey[:exit_station] = exit_station
-    @journeys << @journey
+    @journeys.last.store(:exit_station, exit_station)
   end
 
   def in_journey?
-    @journeys
+    @journeys.empty? ? false : !@journeys.last.has_key?(:exit_station)
   end
 
   private
