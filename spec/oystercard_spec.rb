@@ -8,6 +8,7 @@ describe Oystercard do
   let(:card_with_money) { described_class.new }
   before(:each) { card_with_money.top_up(Oystercard::MAX_BALANCE) } #any reference to card_with_money will have its balance full
   let(:entry_station) { double(:entry_station) }
+  let(:exit_station) { double(:exit_station) }
 
   max_balance = Oystercard::MAX_BALANCE
   min_amount = Oystercard::MIN_AMOUNT
@@ -19,7 +20,7 @@ describe Oystercard do
       it { is_expected.to(respond_to(:top_up).with(1).argument) }
       it { is_expected.to(respond_to(:in_journey?)) }
       it { is_expected.to(respond_to(:touch_in).with(1).argument) }
-      it { is_expected.to(respond_to(:touch_out)) }
+      it { is_expected.to(respond_to(:touch_out).with(1).argument) }
       it { is_expected.to(respond_to(:entry_station)) }
     end
   end
@@ -79,15 +80,28 @@ describe Oystercard do
     context '#touch_out should:' do
       it 'change @journey to false' do
         card_with_money.touch_in(entry_station)
-        card_with_money.touch_out
+        card_with_money.touch_out(exit_station)
         expect(card_with_money).not_to(be_in_journey)
       end
 
       it 'forget entry_station when touching out' do
         card_with_money.touch_in(entry_station)
-        card_with_money.touch_out
+        card_with_money.touch_out(exit_station)
         expect(card_with_money.entry_station).to(eq(nil))
       end
     end
   end
+
+  describe '#journey_history' do
+    it 'journey history to return a hash' do
+      expect(card_with_money.journey_history).to eq({})
+    end
+    it 'will return a history of journeys' do
+      card_with_money.touch_in(entry_station)
+      card_with_money.touch_out(exit_station)
+      expect(card_with_money.journey_history).to eq({:journey1 => card_with_money.journey })
+    end
+
+  end
+
 end
