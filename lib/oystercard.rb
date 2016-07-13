@@ -5,14 +5,14 @@ class Oystercard
 
   attr_reader :balance
   attr_reader :entry_station
-  attr_reader :journey_history
-  attr_reader :journey
+  attr_reader :exit_station
+  attr_reader :journeys
 
   def initialize
     @balance = 0
     @entry_station = nil
-    @journey_history = {}
-    @journey = []
+    @exit_station = nil
+    @journeys = {}
   end
 
   def top_up(amount)
@@ -24,21 +24,18 @@ class Oystercard
     raise "Card needs at least £#{MIN_AMOUNT} to touch in" if @balance < MIN_AMOUNT
     deduct_fare(MIN_FARE)
     @entry_station = station
-    @journey = []
-    @journey << entry_station
+    @journeys[:entry_station] = entry_station
   end
 
   def touch_out(exit_station)
     @entry_station = nil
-    @journey << exit_station
-    @journey_history[:journey1] = @journey
+    @exit_station = exit_station
+    @journeys[:exit_station] = exit_station
   end
 
   def in_journey?
     !!@entry_station
   end
-
-
 
   private
 

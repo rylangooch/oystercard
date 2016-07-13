@@ -89,19 +89,25 @@ describe Oystercard do
         card_with_money.touch_out(exit_station)
         expect(card_with_money.entry_station).to(eq(nil))
       end
+
+      it 'records the exit station' do
+        card_with_money.touch_in(entry_station)
+        card_with_money.touch_out(exit_station)
+        expect(card_with_money.exit_station).to eq(exit_station)
+      end
     end
   end
 
-  describe '#journey_history' do
-    it 'journey history to return a hash' do
-      expect(card_with_money.journey_history).to eq({})
+  describe '#journey' do
+    it 'has an empty list of journeys by default' do
+      expect(subject.journeys).to be_empty
     end
-    it 'will return a history of journeys' do
+
+    let(:journey) { {entry_station: entry_station, exit_station: exit_station} }
+    it 'stores a journey' do
       card_with_money.touch_in(entry_station)
       card_with_money.touch_out(exit_station)
-      expect(card_with_money.journey_history).to eq({:journey1 => card_with_money.journey })
+      expect(card_with_money.journeys).to include journey
     end
-
   end
-
 end
