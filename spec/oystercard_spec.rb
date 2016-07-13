@@ -7,6 +7,11 @@ describe Oystercard do
 
   let(:card_with_money) { described_class.new }
   before(:each) { card_with_money.top_up(Oystercard::MAX_BALANCE) } #any reference to card_with_money will have its balance full
+  let(:entry_station) { double(:entry_station) }
+
+  max_balance = Oystercard::MAX_BALANCE
+  min_amount = Oystercard::MIN_AMOUNT
+  min_fare = Oystercard::MIN_FARE
 
   describe '#class methods' do
     context 'these methods should exist in the class:' do
@@ -15,7 +20,7 @@ describe Oystercard do
       it { is_expected.to(respond_to(:in_journey?)) }
       it { is_expected.to(respond_to(:touch_in).with(1).argument) }
       it { is_expected.to(respond_to(:touch_out)) }
-      it { is_expected.to(respond_to(:station)) }
+      it { is_expected.to(respond_to(:entry_station)) }
     end
   end
 
@@ -29,14 +34,13 @@ describe Oystercard do
 
   describe '#top_up' do
     context '#top_up should:' do
-      it 'top up balance by 5' do
-        expect{ subject.top_up(5) }.to change{ subject.balance }.by(5)
+      it 'top up balance by minimum amount' do
+        expect{ subject.top_up(min_amount) }.to change{ subject.balance }.by(min_amount)
       end
 
       it 'not top up if max balance exceeded' do
-        max_balance = Oystercard::MAX_BALANCE
         subject.top_up(max_balance)
-        expect{ subject.top_up(1) }.to(raise_error("Maximum balance of £#{max_balance} exceeded"))
+        expect{ subject.top_up(min_amount) }.to(raise_error("Maximum balance of £#{max_balance} exceeded"))
       end
     end
   end
@@ -52,22 +56,21 @@ describe Oystercard do
   describe '#touch_in' do
     context '#touch_in should:' do
       it 'change @journey to true' do
-        card_with_money.touch_in(:station)
+        card_with_money.touch_in(entry_station)
         expect(card_with_money).to(be_in_journey)
       end
 
       it 'raise error if card does not have minimum amount' do
-        min_amount = Oystercard::MIN_AMOUNT
-        expect{ subject.touch_in(:station) }.to(raise_error("Card needs at least £#{min_amount} to touch in"))
+        expect{ subject.touch_in(entry_station) }.to(raise_error("Card needs at least £#{min_amount} to touch in"))
       end
 
       it 'deducts minimum fare from balance' do
-        expect{ card_with_money.touch_in(:station) }.to change{ card_with_money.balance }.by(-Oystercard::MIN_FARE)
+        expect{ card_with_money.touch_in(entry_station) }.to change{ card_with_money.balance }.by(-min_fare)
       end
 
       it 'record the touch_in station' do
-        card_with_money.touch_in(:station)
-        expect(card_with_money.station).to(eq(:station))
+        card_with_money.touch_in(entry_station)
+        expect(card_with_money.entry_station).to(eq(entry_station))
       end
     end
   end
@@ -75,9 +78,15 @@ describe Oystercard do
   describe '#touch_out' do
     context '#touch_out should:' do
       it 'change @journey to false' do
-        card_with_money.touch_in(:station)
+        card_with_money.touch_in(entry_station)
         card_with_money.touch_out
         expect(card_with_money).not_to(be_in_journey)
+      end
+
+      it 'forget entry_station when touching out' do
+        card_with_money.touch_in(entry_station)
+        card_with_money.touch_out
+        expect(card_with_money.entry_station).to(eq(nil))
       end
     end
   end
