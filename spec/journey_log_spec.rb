@@ -2,9 +2,9 @@ require 'journey_log'
 
 describe JourneyLog do
   let(:card_with_money) { double(:card_with_money) }
-  let(:trip) {[{ entry_station: station_entered, exit_station: station_exited }]}
-  let(:station_entered) {("Old Street")}
-  let(:station_exited) {("Waterloo")}
+  let(:trip) { [{ entry_station: station_entered, exit_station: station_exited }] }
+  let(:station_entered) { ("Old Street") }
+  let(:station_exited) { ("Waterloo") }
   let(:journey) { double(:journey, :MINIMUM_FARE => 1) }
 
   describe '#start' do

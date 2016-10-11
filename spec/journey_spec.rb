@@ -1,9 +1,9 @@
 require 'journey'
 
 describe Journey do
-  let(:station_entered) {double(:station)}
-  subject(:journey) {described_class.new}
-  let(:station_exited) {double(:station)}
+  let(:station_entered) { double(:station) }
+  subject(:journey) { described_class.new }
+  let(:station_exited) { double(:station) }
 
   it 'collects the entry station' do
     journey = described_class.new(station_entered)

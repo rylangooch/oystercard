@@ -2,9 +2,9 @@ require 'oystercard'
 
 describe Oystercard do
   let(:card_with_money) { Oystercard.new(10) }
-  let(:trip) {[{ entry_station: station_entered, exit_station: station_exited }]}
-  let(:station_entered) {("Old Street")}
-  let(:station_exited) {("Waterloo")}
+  let(:trip) { [{ entry_station: station_entered, exit_station: station_exited }] }
+  let(:station_entered) { ("Old Street") }
+  let(:station_exited) { ("Waterloo") }
   let(:journeys) { double(:journeys) }
 
   describe 'initialize' do
