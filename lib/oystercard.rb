@@ -43,5 +43,4 @@ private
   def refund
     @balance += journey.refund_amount
   end
-
 end

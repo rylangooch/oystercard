@@ -27,5 +27,4 @@ class Journey
   def refund_amount
     complete? ? 5 : 0
   end
-
 end

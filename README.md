@@ -1,6 +1,6 @@
 # Oystercard
 
-A program that models the London Oystercard system
+A program that models London's Oystercard system
 
 ## User Stories
 
